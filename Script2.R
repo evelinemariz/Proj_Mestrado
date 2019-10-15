@@ -9,7 +9,11 @@ require(reshape2)
 dados <- read_delim("MICRODADOS_2018.txt", ";", escape_double = FALSE,
                       locale = locale(encoding = "ISO-8859-1"), 
                              trim_ws = TRUE)
+
+
+
 dados <- dados[c(-2,-3,-5,-12:-15,-19,-21:-82,-87:-90,-95:-98,-100:-103)]
+View(dados)
 dados <- dados[!is.na(dados$NU_NOTA_CN),]
 dados$nt_final <- (rowSums(dados[,c(17,18, 19, 20, 28)]))/5
 dados <- dados[!is.na(dados$nt_final),]
@@ -139,9 +143,229 @@ ggplot(dfMG, aes(nt_final))+
 pie(table(dados$TP_SEXO))
 
 #REALIZANDO ANÁLISES DA LOGÍSTICA
+with(dados, table(nt_cat, Q006))
+with(dados, table(nt_cat, Q027))
+with(dados, table(nt_cat, TP_COR_RACA))
 with(dados, table(nt_cat, TP_SEXO))
-#with(dados, do.call(rbind, tapply(TP_SEXO, nt_cat, function(x) c(M = mean(x), SD = sd(x)))))
+#with(dados, do.call(rbind, tapply(Q027, nt_cat, function(x) c(M = mean(x), SD = sd(x)))))
 
 dados$nt_cat2 <- relevel(dados$nt_cat, ref = "0")
-test <- multinom(nt_cat2 ~ TP_COR_RACA + TP_SEXO + NU_IDADE, data = dados)
-summary(test)
+
+#REALIZANDO OS TESTES DE CADA MODELO
+test1 <- multinom(nt_cat2 ~ Q006, data = dados)
+summary(test1)
+z <- summary(test1)$coefficients/summary(test1)$standard.errors
+z
+
+# 2-tailed z test1
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test1))
+
+head(pp <- fitted(test1))
+
+#AVALIAR
+#dses <- data.frame(ses = c("low", "middle", "high"), write = mean(ml$write))
+#predict(test, newdata = dses, "probs")
+
+
+test12 <- multinom(nt_cat2 ~ Q006 + Q027, data = dados)
+summary(test12)
+z <- summary(test12)$coefficients/summary(test12)$standard.errors
+z
+
+# 2-tailed z test12
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test12))
+
+head(pp <- fitted(test12))
+
+test123 <- multinom(nt_cat2 ~ Q006 + Q027 + TP_COR_RACA, data = dados)
+summary(test123)
+z <- summary(test123)$coefficients/summary(test123)$standard.errors
+z
+
+# 2-tailed z test123
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test123))
+
+head(pp <- fitted(test123))
+
+test1234 <- multinom(nt_cat2 ~ Q006 + Q027 + TP_COR_RACA + TP_SEXO, data = dados)
+summary(test1234)
+z <- summary(test1234)$coefficients/summary(test1234)$standard.errors
+z
+
+# 2-tailed z test1234
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test1234))
+
+head(pp <- fitted(test1234))
+
+test124 <- multinom(nt_cat2 ~ Q006 + Q027 + TP_SEXO, data = dados)
+summary(test124)
+z <- summary(test124)$coefficients/summary(test124)$standard.errors
+z
+
+# 2-tailed z test124
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test124))
+
+head(pp <- fitted(test124))
+
+test13 <- multinom(nt_cat2 ~ Q006 + TP_COR_RACA, data = dados)
+summary(test13)
+z <- summary(test13)$coefficients/summary(test13)$standard.errors
+z
+
+# 2-tailed z test13
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test13))
+
+head(pp <- fitted(test13))
+
+test134 <- multinom(nt_cat2 ~ Q006 + TP_COR_RACA + TP_SEXO, data = dados)
+summary(test134)
+z <- summary(test134)$coefficients/summary(test134)$standard.errors
+z
+
+# 2-tailed z test134
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test134))
+
+head(pp <- fitted(test134))
+
+test14 <- multinom(nt_cat2 ~ Q006 + TP_SEXO, data = dados)
+summary(test14)
+z <- summary(test14)$coefficients/summary(test14)$standard.errors
+z
+
+# 2-tailed z test14
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test14))
+
+head(pp <- fitted(test14))
+
+test2 <- multinom(nt_cat2 ~ Q027, data = dados)
+summary(test2)
+z <- summary(test2)$coefficients/summary(test2)$standard.errors
+z
+
+# 2-tailed z test2
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test2))
+
+head(pp <- fitted(test2))
+
+test23 <- multinom(nt_cat2 ~ Q027 + TP_COR_RACA, data = dados)
+summary(test23)
+z <- summary(test23)$coefficients/summary(test23)$standard.errors
+z
+
+# 2-tailed z test23
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test23))
+
+head(pp <- fitted(test23))
+
+test234 <- multinom(nt_cat2 ~ Q027 + TP_COR_RACA + TP_SEXO, data = dados)
+summary(test234)
+z <- summary(test234)$coefficients/summary(test234)$standard.errors
+z
+
+# 2-tailed z test234
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test234))
+
+head(pp <- fitted(test234))
+
+test24 <- multinom(nt_cat2 ~ Q027 + TP_SEXO, data = dados)
+summary(test24)
+z <- summary(test24)$coefficients/summary(test24)$standard.errors
+z
+
+# 2-tailed z test24
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test24))
+
+head(pp <- fitted(test24))
+
+test3 <- multinom(nt_cat2 ~ TP_COR_RACA, data = dados)
+summary(test3)
+z <- summary(test3)$coefficients/summary(test3)$standard.errors
+z
+
+# 2-tailed z test3
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test3))
+
+head(pp <- fitted(test3))
+
+test34 <- multinom(nt_cat2 ~ TP_COR_RACA + TP_SEXO, data = dados)
+summary(test34)
+z <- summary(test34)$coefficients/summary(test34)$standard.errors
+z
+
+# 2-tailed z test34
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test34))
+
+head(pp <- fitted(test34))
+
+test4 <- multinom(nt_cat2 ~ TP_SEXO, data = dados)
+summary(test4)
+z <- summary(test4)$coefficients/summary(test4)$standard.errors
+z
+
+# 2-tailed z test4
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+p
+
+## extract the coefficients from the model and exponentiate
+exp(coef(test4))
+
+head(pp <- fitted(test4))
+
+#dses <- data.frame(ses = c("low", "middle", "high"), write = mean(ml$write))
+#predict(test, newdata = dses, "probs")
